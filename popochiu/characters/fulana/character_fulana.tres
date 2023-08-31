@@ -1,0 +1,9 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://cgltyrynd8jax"]
+
+[ext_resource type="Script" path="res://popochiu/characters/fulana/character_fulana_state.gd" id="1_s7dn6"]
+
+[resource]
+resource_name = "Fulana"
+script = ExtResource("1_s7dn6")
+script_name = "Fulana"
+scene = "res://popochiu/characters/fulana/character_fulana.tscn"

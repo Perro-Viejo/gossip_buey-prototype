@@ -1,0 +1,9 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://tlukbmtt1y3r"]
+
+[ext_resource type="Script" path="res://popochiu/characters/melana/character_melana_state.gd" id="1_aolpq"]
+
+[resource]
+resource_name = "Melana"
+script = ExtResource("1_aolpq")
+script_name = "Melana"
+scene = "res://popochiu/characters/melana/character_melana.tscn"

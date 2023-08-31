@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=3 uid="uid://bd480b31cvmk2"]
+
+[ext_resource type="Script" path="res://popochiu/characters/fulana/character_fulana.gd" id="1_0p8u1"]
+[ext_resource type="Texture2D" uid="uid://hawt327ob4ap" path="res://popochiu/characters/fulana/fulana.png" id="2_aatsn"]
+
+[node name="CharacterFulana" type="Area2D"]
+script = ExtResource("1_0p8u1")
+text_color = Color(0.470588, 0.231373, 1, 1)
+popochiu_placeholder = null
+script_name = "Fulana"
+description = "Fulana"
+clickable = false
+cursor = 8
+
+[node name="InteractionPolygon" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-10, -10, 10, -10, 10, 10, -10, 10)
+
+[node name="BaselineHelper" type="Line2D" parent="."]
+visible = false
+points = PackedVector2Array(-10000, 0, 10000, 0)
+width = 1.0
+
+[node name="WalkToHelper" type="Marker2D" parent="."]
+visible = false
+
+[node name="ColorRect" type="ColorRect" parent="WalkToHelper"]
+offset_left = -2.5
+offset_top = -2.5
+offset_right = 2.5
+offset_bottom = 2.5
+color = Color(0, 1, 1, 1)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("2_aatsn")
+
+[node name="DialogPos" type="Marker2D" parent="."]
+visible = false
+position = Vector2(0, -86)

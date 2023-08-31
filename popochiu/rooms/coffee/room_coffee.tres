@@ -1,0 +1,12 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://dnvhh24e76esd"]
+
+[ext_resource type="Script" path="res://popochiu/rooms/coffee/room_coffee_state.gd" id="1_djv5n"]
+
+[resource]
+resource_name = "Coffee"
+script = ExtResource("1_djv5n")
+script_name = "Coffee"
+scene = "res://popochiu/rooms/coffee/room_coffee.tscn"
+visited = false
+visited_first_time = false
+visited_times = 0

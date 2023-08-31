@@ -1,0 +1,40 @@
+[gd_scene load_steps=3 format=3 uid="uid://cyfcibe4ngoie"]
+
+[ext_resource type="Script" path="res://popochiu/graphic_interface/graphic_interface.gd" id="1_1dyfn"]
+[ext_resource type="PackedScene" uid="uid://cg18h3icrip1r" path="res://popochiu/graphic_interface/dialog_text/dialog_text.tscn" id="1_x33fx"]
+
+[node name="GraphicInterface" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_1dyfn")
+
+[node name="GraphicInterface" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="DialogText" parent="GraphicInterface" instance=ExtResource("1_x33fx")]
+layout_mode = 0
+visible_characters_behavior = 1
+
+[node name="Gossip" type="Button" parent="GraphicInterface"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -102.5
+offset_top = -149.0
+offset_right = 102.5
+offset_bottom = -56.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_default_cursor_shape = 2
+text = "G O S S I P"
+
+[connection signal="button_down" from="GraphicInterface/Gossip" to="." method="_on_gossip_button_down"]
+[connection signal="button_up" from="GraphicInterface/Gossip" to="." method="_on_gossip_button_up"]

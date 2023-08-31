@@ -1,0 +1,57 @@
+[gd_scene load_steps=9 format=3 uid="uid://b32trwhci6d36"]
+
+[ext_resource type="Script" path="res://popochiu/rooms/coffee/room_coffee.gd" id="1_y2jnh"]
+[ext_resource type="PackedScene" uid="uid://fygtxlsk3mvq" path="res://popochiu/rooms/coffee/props/bg/prop_bg.tscn" id="2_fnuyq"]
+[ext_resource type="Script" path="res://addons/popochiu/engine/objects/prop/popochiu_prop.gd" id="3_pnpy0"]
+[ext_resource type="Texture2D" uid="uid://daga4od7spc03" path="res://popochiu/rooms/coffee/props/bg/bg.png" id="4_r7ep2"]
+[ext_resource type="PackedScene" uid="uid://bd480b31cvmk2" path="res://popochiu/characters/fulana/character_fulana.tscn" id="5_0p3yv"]
+[ext_resource type="Script" path="res://popochiu/characters/fulana/character_fulana.gd" id="6_hx64a"]
+[ext_resource type="PackedScene" uid="uid://li5jqgfxbpa2" path="res://popochiu/characters/melana/character_melana.tscn" id="7_efm3o"]
+[ext_resource type="Script" path="res://popochiu/characters/melana/character_melana.gd" id="8_omrb0"]
+
+[node name="RoomCoffee" type="Node2D"]
+script = ExtResource("1_y2jnh")
+script_name = "Coffee"
+
+[node name="WalkableAreas" type="Node2D" parent="."]
+
+[node name="Props" type="Node2D" parent="."]
+
+[node name="Bg" type="Area2D" parent="Props" instance=ExtResource("2_fnuyq")]
+z_index = -1
+position = Vector2(640, 360)
+script = ExtResource("3_pnpy0")
+texture = ExtResource("4_r7ep2")
+script_name = "Bg"
+description = "Bg"
+clickable = false
+baseline = -360
+cursor = 1
+
+[node name="Hotspots" type="Node2D" parent="."]
+
+[node name="Regions" type="Node2D" parent="."]
+
+[node name="Markers" type="Node2D" parent="."]
+
+[node name="Characters" type="Node2D" parent="."]
+
+[node name="CharacterFulana *" type="Area2D" parent="Characters" instance=ExtResource("5_0p3yv")]
+position = Vector2(918, 369)
+script = ExtResource("6_hx64a")
+text_color = Color(0.470588, 0.231373, 1, 1)
+popochiu_placeholder = null
+script_name = "Fulana"
+description = "Fulana"
+clickable = false
+cursor = 8
+
+[node name="CharacterMelana *" type="Area2D" parent="Characters" instance=ExtResource("7_efm3o")]
+position = Vector2(288, 362)
+script = ExtResource("8_omrb0")
+text_color = Color(0.243137, 0.654902, 0.494118, 1)
+popochiu_placeholder = null
+script_name = "Melana"
+description = "Melana"
+clickable = false
+cursor = 8
