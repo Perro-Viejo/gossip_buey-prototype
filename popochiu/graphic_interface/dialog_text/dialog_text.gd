@@ -22,6 +22,8 @@ var _y_limit := 0.0
 var _talking_character := ''
 var _talking_character_idx := 0
 var _initial_idx := -1
+var _final_idx := -1
+var _previous_text := ""
 # ------------------------------------------------------------- Gossip Buey ----
 
 @onready var _tween: Tween = null
@@ -48,15 +50,14 @@ func _ready() -> void:
 	C.character_spoke.connect(_show_dialogue)
 	
 	Globals.started_listening.connect(_on_started_listening)
+	Globals.stopped_listening.connect(_on_stoped_listening)
 
 
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	if not event is InputEventMouseButton or modulate.a == 0.0:
 		return
 	
 	var e: InputEventMouseButton = event
-	
-#	get_viewport().set_input_as_handled()
 	
 	if e.is_pressed() and e.button_index == MOUSE_BUTTON_LEFT:
 		if visible_ratio == 1.0:
@@ -67,12 +68,27 @@ func _input(event: InputEvent) -> void:
 
 
 func _process(delta: float) -> void:
-	modulate.a = 1.0 if Globals.is_listening else 0.0
+	modulate.a = 1.0 if Globals.is_listening else 0.2
 	
-	if modulate.a == 1.0:
-		Globals.listened_dialogs[
-			'%s_%d' % [_talking_character, _talking_character_idx]
-		] = get_parsed_text().substr(_initial_idx)
+#	if modulate.a == 1.0:
+#		if not Globals.listened_dialogs.has(
+#			'%s_%d' % [_talking_character, _talking_character_idx]
+#		):
+#			Globals.listened_dialogs[
+#				'%s_%d' % [_talking_character, _talking_character_idx]
+#			] = ""
+#
+#		Globals.listened_dialogs[
+#			'%s_%d' % [_talking_character, _talking_character_idx]
+#		] += get_parsed_text().substr(
+#			visible_characters,
+#			max(visible_characters + 1, get_parsed_text().length() - 1)
+#		)
+#
+#		if _final_idx > -1:
+#			Globals.listened_dialogs[
+#				'%s_%d' % [_talking_character, _talking_character_idx]
+#			] += "..."
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
@@ -171,9 +187,11 @@ func disappear() -> void:
 	_auto_continue = false
 	modulate.a = 0.0
 	_is_waiting_input = false
+	_previous_text = get_parsed_text()
 	
 	if is_instance_valid(_tween) and _tween.is_running():
 		_tween.kill()
+	
 	clear()
 	
 	_continue_icon.hide()
@@ -194,11 +212,24 @@ func change_speed() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _show_dialogue(chr: PopochiuCharacter, msg := '') -> void:
+	if Globals.is_listening and not _previous_text.is_empty():
+		Globals.listened_dialogs[
+			'%s_%d' % [_talking_character, _talking_character_idx]
+		] += _previous_text.substr(_initial_idx, visible_characters)
+	
 	_talking_character = chr.script_name
 	_talking_character_idx += 1
 	
 	if Globals.is_listening:
 		_initial_idx = 0
+		_final_idx = -1
+		
+		if not Globals.listened_dialogs.has(
+			'%s_%d' % [_talking_character, _talking_character_idx]
+		):
+			Globals.listened_dialogs[
+				'%s_%d' % [_talking_character, _talking_character_idx]
+			] = ""
 	
 	play_text({
 		text = msg,
@@ -275,3 +306,25 @@ func _continue(forced_continue := false) -> void:
 
 func _on_started_listening() -> void:
 	_initial_idx = visible_characters
+	
+	if _talking_character.is_empty(): return
+	
+	if not Globals.listened_dialogs.has(
+		'%s_%d' % [_talking_character, _talking_character_idx]
+	):
+		Globals.listened_dialogs[
+			'%s_%d' % [_talking_character, _talking_character_idx]
+		] = "..."
+
+
+func _on_stoped_listening() -> void:
+	_final_idx = visible_characters
+	
+	Globals.listened_dialogs[
+		'%s_%d' % [_talking_character, _talking_character_idx]
+	] += get_parsed_text().substr(_initial_idx, _final_idx)
+
+	if _final_idx > -1:
+		Globals.listened_dialogs[
+			'%s_%d' % [_talking_character, _talking_character_idx]
+		] += "..."

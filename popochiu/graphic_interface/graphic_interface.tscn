@@ -1,7 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://cyfcibe4ngoie"]
+[gd_scene load_steps=5 format=3 uid="uid://cyfcibe4ngoie"]
 
 [ext_resource type="Script" path="res://popochiu/graphic_interface/graphic_interface.gd" id="1_1dyfn"]
 [ext_resource type="PackedScene" uid="uid://cg18h3icrip1r" path="res://popochiu/graphic_interface/dialog_text/dialog_text.tscn" id="1_x33fx"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_endtf"]
+bg_color = Color(0.596078, 0.388235, 0.243137, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hqj7x"]
+bg_color = Color(0.894118, 0.847059, 0.807843, 1)
 
 [node name="GraphicInterface" type="CanvasLayer"]
 layer = 10
@@ -36,5 +42,73 @@ grow_vertical = 0
 mouse_default_cursor_shape = 2
 text = "G O S S I P"
 
+[node name="Notebook" type="Button" parent="GraphicInterface"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -117.0
+offset_top = 16.0
+offset_right = -32.0
+offset_bottom = 47.0
+grow_horizontal = 0
+text = "Notebook"
+
+[node name="Notepad" type="ColorRect" parent="GraphicInterface"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.223529)
+
+[node name="NotepadPanel" type="PanelContainer" parent="GraphicInterface/Notepad"]
+layout_mode = 0
+offset_left = 761.0
+offset_top = 8.0
+offset_right = 1270.0
+offset_bottom = 686.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_endtf")
+
+[node name="MarginContainer" type="MarginContainer" parent="GraphicInterface/Notepad/NotepadPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GraphicInterface/Notepad/NotepadPanel/MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GraphicInterface/Notepad/NotepadPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="GraphicInterface/Notepad/NotepadPanel/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Bloc de notas"
+horizontal_alignment = 1
+
+[node name="Close" type="Button" parent="GraphicInterface/Notepad/NotepadPanel/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = " X "
+
+[node name="PanelContainer" type="PanelContainer" parent="GraphicInterface/Notepad/NotepadPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_hqj7x")
+
+[node name="Notes" type="RichTextLabel" parent="GraphicInterface/Notepad/NotepadPanel/MarginContainer/VBoxContainer/PanelContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/default_color = Color(0.305882, 0.309804, 0.392157, 1)
+bbcode_enabled = true
+text = "[b]Fulana:[/b] Holaaaaaaaaaaaa."
+
 [connection signal="button_down" from="GraphicInterface/Gossip" to="." method="_on_gossip_button_down"]
 [connection signal="button_up" from="GraphicInterface/Gossip" to="." method="_on_gossip_button_up"]
+[connection signal="pressed" from="GraphicInterface/Notebook" to="." method="_on_notebook_pressed"]
+[connection signal="pressed" from="GraphicInterface/Notepad/NotepadPanel/MarginContainer/VBoxContainer/HBoxContainer/Close" to="." method="_on_close_pressed"]
