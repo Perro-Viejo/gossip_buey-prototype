@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://cyfcibe4ngoie"]
+[gd_scene load_steps=6 format=3 uid="uid://cyfcibe4ngoie"]
 
 [ext_resource type="Script" path="res://popochiu/graphic_interface/graphic_interface.gd" id="1_1dyfn"]
 [ext_resource type="PackedScene" uid="uid://cg18h3icrip1r" path="res://popochiu/graphic_interface/dialog_text/dialog_text.tscn" id="1_x33fx"]
+[ext_resource type="RichTextEffect" uid="uid://dkuhu6xaxsj7a" path="res://popochiu/graphic_interface/dialog_text/highlilght_text_effect.tres" id="3_1pcon"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_endtf"]
 bg_color = Color(0.596078, 0.388235, 0.243137, 1)
@@ -24,6 +25,7 @@ mouse_filter = 2
 
 [node name="DialogText" parent="GraphicInterface" instance=ExtResource("1_x33fx")]
 layout_mode = 0
+custom_effects = [ExtResource("3_1pcon")]
 visible_characters_behavior = 1
 
 [node name="Gossip" type="Button" parent="GraphicInterface"]

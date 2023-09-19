@@ -67,28 +67,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			stop()
 
 
-func _process(delta: float) -> void:
-	modulate.a = 1.0 if Globals.is_listening else 0.2
-	
-#	if modulate.a == 1.0:
-#		if not Globals.listened_dialogs.has(
-#			'%s_%d' % [_talking_character, _talking_character_idx]
-#		):
-#			Globals.listened_dialogs[
-#				'%s_%d' % [_talking_character, _talking_character_idx]
-#			] = ""
-#
-#		Globals.listened_dialogs[
-#			'%s_%d' % [_talking_character, _talking_character_idx]
-#		] += get_parsed_text().substr(
-#			visible_characters,
-#			max(visible_characters + 1, get_parsed_text().length() - 1)
-#		)
-#
-#		if _final_idx > -1:
-#			Globals.listened_dialogs[
-#				'%s_%d' % [_talking_character, _talking_character_idx]
-#			] += "..."
+#func _process(delta: float) -> void:
+#	modulate.a = 1.0 if Globals.is_listening else 0.2
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
@@ -161,8 +141,7 @@ func play_text(props: Dictionary) -> void:
 	else:
 		_wait_input()
 	
-	if Globals.is_listening:
-		modulate.a = 1.0
+	modulate.a = 1.0
 
 
 func stop() ->void:
@@ -222,7 +201,9 @@ func _show_dialogue(chr: PopochiuCharacter, msg := '') -> void:
 	
 	if Globals.is_listening:
 		_initial_idx = 0
+		Globals.start_idx = 0
 		_final_idx = -1
+		Globals.end_idx = msg.length()
 		
 		if not Globals.listened_dialogs.has(
 			'%s_%d' % [_talking_character, _talking_character_idx]
@@ -232,7 +213,7 @@ func _show_dialogue(chr: PopochiuCharacter, msg := '') -> void:
 			] = ""
 	
 	play_text({
-		text = msg,
+		text = "[highlight]%s[/highlight]" % msg,
 		color = chr.text_color,
 		position = PopochiuUtils.get_screen_coords_for(chr.dialog_pos).floor() / (
 			E.scale if E.settings.scale_gui else Vector2.ONE
@@ -306,6 +287,8 @@ func _continue(forced_continue := false) -> void:
 
 func _on_started_listening() -> void:
 	_initial_idx = visible_characters
+	Globals.start_idx = _initial_idx
+	Globals.end_idx = get_parsed_text().length()
 	
 	if _talking_character.is_empty(): return
 	
@@ -319,6 +302,7 @@ func _on_started_listening() -> void:
 
 func _on_stoped_listening() -> void:
 	_final_idx = visible_characters
+	Globals.end_idx = _final_idx
 	
 	Globals.listened_dialogs[
 		'%s_%d' % [_talking_character, _talking_character_idx]

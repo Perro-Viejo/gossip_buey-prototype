@@ -1,0 +1,7 @@
+[gd_resource type="RichTextEffect" load_steps=2 format=3 uid="uid://dkuhu6xaxsj7a"]
+
+[ext_resource type="Script" path="res://popochiu/graphic_interface/dialog_text/highlight_text_effect.gd" id="1_jdi28"]
+
+[resource]
+resource_name = "Highlight"
+script = ExtResource("1_jdi28")
