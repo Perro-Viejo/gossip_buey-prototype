@@ -24,6 +24,7 @@ var _talking_character_idx := 0
 var _initial_idx := -1
 var _final_idx := -1
 var _previous_text := ""
+var _length_diff := -1
 # ------------------------------------------------------------- Gossip Buey ----
 
 @onready var _tween: Tween = null
@@ -141,6 +142,8 @@ func play_text(props: Dictionary) -> void:
 	else:
 		_wait_input()
 	
+	_length_diff = msg.length() - get_parsed_text().length()
+	
 	modulate.a = 1.0
 
 
@@ -199,11 +202,14 @@ func _show_dialogue(chr: PopochiuCharacter, msg := '') -> void:
 	_talking_character = chr.script_name
 	_talking_character_idx += 1
 	
+	# Reiniciar el registro de índices escuchados
+	Globals.dialog_listened_indexes = [[-1,-1]]
+	
 	if Globals.is_listening:
 		_initial_idx = 0
-		Globals.start_idx = 0
 		_final_idx = -1
-		Globals.end_idx = msg.length()
+		
+		Globals.dialog_listened_indexes[0] = [ 0, msg.length() ]
 		
 		if not Globals.listened_dialogs.has(
 			'%s_%d' % [_talking_character, _talking_character_idx]
@@ -286,9 +292,13 @@ func _continue(forced_continue := false) -> void:
 
 
 func _on_started_listening() -> void:
+	if _is_waiting_input: return
+	
 	_initial_idx = visible_characters
-	Globals.start_idx = _initial_idx
-	Globals.end_idx = get_parsed_text().length()
+	
+	Globals.dialog_listened_indexes[-1] = [
+		_initial_idx, get_parsed_text().length()
+	]
 	
 	if _talking_character.is_empty(): return
 	
@@ -301,12 +311,32 @@ func _on_started_listening() -> void:
 
 
 func _on_stoped_listening() -> void:
-	_final_idx = visible_characters
-	Globals.end_idx = _final_idx
+	if _is_waiting_input: return
 	
+	_final_idx = visible_characters
+	
+	if _final_idx > -1:
+		Globals.dialog_listened_indexes[-1][1] = _final_idx
+	
+	Globals.dialog_listened_indexes.append([ -1 , -1 ])
+	
+#	prints(
+#		"_initial_idx, _final_idx, _length_diff",
+#		_initial_idx, _final_idx, _length_diff
+#	)
+#	prints("Globals.dialog_listened_indexes", Globals.dialog_listened_indexes)
+#	Globals.listened_dialogs[
+#		'%s_%d' % [_talking_character, _talking_character_idx]
+#	] += get_parsed_text().substr(
+#		_initial_idx,
+#		(_final_idx - _length_diff) if _final_idx > -1 else -1
+#	)
 	Globals.listened_dialogs[
 		'%s_%d' % [_talking_character, _talking_character_idx]
-	] += get_parsed_text().substr(_initial_idx, _final_idx)
+	] += get_parsed_text().substr(
+		_initial_idx,
+		_final_idx
+	)
 
 	if _final_idx > -1:
 		Globals.listened_dialogs[
