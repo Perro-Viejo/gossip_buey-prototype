@@ -9,6 +9,7 @@
 [node name="RoomCoffee" type="Node2D"]
 script = ExtResource("1_y2jnh")
 script_name = "Coffee"
+script_name = "Coffee"
 
 [node name="WalkableAreas" type="Node2D" parent="."]
 

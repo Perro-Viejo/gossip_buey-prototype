@@ -2,6 +2,7 @@
 extends RichTextEffect
 
 var bbcode := "highlight"
+var unknown_glyphs: Array[int] = [612, 594, 395, 588, 603, 0, 681]
 
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ GODOT ░░░░
@@ -16,6 +17,7 @@ func _process_custom_fx(char_fx: CharFXTransform) -> bool:
 				char_fx.color = Color.GREEN
 				return true
 	
+	# Matrix-o
 #	var value = char_fx.glyph_index
 #	var matrix_time = fmod(char_fx.elapsed_time + (char_fx.range.x / float(50)), \
 #						   2.0 + 1.0)
@@ -32,7 +34,8 @@ func _process_custom_fx(char_fx: CharFXTransform) -> bool:
 #		char_fx.font, 1, value, 0
 #	)
 	
-	char_fx.glyph_index = 13
+	#prints("char_fx.glyph_index", char_fx.glyph_index)
+	char_fx.glyph_index = unknown_glyphs.pick_random()
 	return true
 
 

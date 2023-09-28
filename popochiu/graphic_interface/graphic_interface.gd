@@ -29,8 +29,8 @@ func _on_notebook_pressed() -> void:
 		var character_name: String = (dialog as String).split("_")[0]
 		var dialog_line: String = Globals.listened_dialogs[dialog]
 		
-		if not (dialog_line.ends_with("?") or dialog_line.ends_with("!")):
-			dialog_line += "."
+		#if not (dialog_line.ends_with("?") or dialog_line.ends_with("!")):
+			#dialog_line += "."
 		
 		%Notes.text += "[b]%s[/b]: %s\n" % [character_name, dialog_line]
 	

@@ -24,7 +24,6 @@ var _talking_character_idx := 0
 var _initial_idx := -1
 var _final_idx := -1
 var _previous_text := ""
-var _length_diff := -1
 # ------------------------------------------------------------- Gossip Buey ----
 
 @onready var _tween: Tween = null
@@ -68,39 +67,64 @@ func _unhandled_input(event: InputEvent) -> void:
 			stop()
 
 
-#func _process(delta: float) -> void:
-#	modulate.a = 1.0 if Globals.is_listening else 0.2
-
-
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PUBLIC ░░░░
 func play_text(props: Dictionary) -> void:
 	var msg: String = E.get_text(props.text)
 	_is_waiting_input = false
 	_dialog_pos = props.position
 	
-	# ==== Calculate the width of the node =====================================
+	# ==== Calculate the size of the node ======================================
+	# Create a RichTextLabel to calculate the resulting size of this node once
+	# the whole text is shown
 	var rt := RichTextLabel.new()
+	rt.add_theme_font_override(
+		'normal_font',
+		get_theme_font("normal_font")
+	)
 	rt.bbcode_enabled = true
-	rt.autowrap_mode = TextServer.AUTOWRAP_WORD
-	var lbl := Label.new()
+	rt.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	rt.text = msg
+	rt.size = get_meta(DFLT_SIZE)
+	add_child(rt)
+
+	# Create a Label to check if the text exceeds the wrap_width
+	var lbl := Label.new()
+	lbl.add_theme_font_override(
+		'normal_font',
+		get_theme_font("normal_font")
+	)
+	lbl.size.y = get_meta(DFLT_SIZE).y
 	lbl.text = rt.get_parsed_text()
 	add_child(lbl)
+
+	rt.clear()
+	rt.text = ""
+	
+	await get_tree().process_frame
+
 	var _size := lbl.size
+
 	if _size.x > wrap_width:
+		# This node will have the width of the wrap_width
 		_size.x = wrap_width
-		rt.size = Vector2(_size.x, get_meta(DFLT_SIZE).y)
-		add_child(rt)
-		_size.y = rt.get_line_count() * get_meta(DFLT_SIZE).y
-		_size.x = rt.get_content_width() + get_meta(DFLT_SIZE).x
+		rt.fit_content = true
+		rt.size.x = _size.x
+		rt.text = msg
+		
+		await get_tree().process_frame
+		
+		_size = rt.size
 	elif _size.x < get_meta(DFLT_SIZE).x:
+		# This node will have the minimum width
 		_size.x = get_meta(DFLT_SIZE).x
-	
-	var characters_count := lbl.get_total_character_count()
-	
+	else:
+		# This node will have the width of the text
+		_size.y = get_meta(DFLT_SIZE).y
+
 	lbl.free()
 	rt.free()
-	# ===================================== Calculate the width of the node ====
+	# ====================================== Calculate the size of the node ====
+	
 	# Define default position (before calculating overflow)
 	size = _size
 	position = props.position - size / 2.0
@@ -138,11 +162,10 @@ func play_text(props: Dictionary) -> void:
 			1,
 			_secs_per_character * get_total_character_count()
 		).from(0.0)
+		
 		_tween.finished.connect(_wait_input)
 	else:
 		_wait_input()
-	
-	_length_diff = msg.length() - get_parsed_text().length()
 	
 	modulate.a = 1.0
 
@@ -194,7 +217,8 @@ func change_speed() -> void:
 
 # ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ PRIVATE ░░░░
 func _show_dialogue(chr: PopochiuCharacter, msg := '') -> void:
-	if Globals.is_listening and not _previous_text.is_empty():
+	if (Globals.is_listening and not _previous_text.is_empty()
+	and Globals.listened_dialogs.has('%s_%d' % [_talking_character, _talking_character_idx])):
 		Globals.listened_dialogs[
 			'%s_%d' % [_talking_character, _talking_character_idx]
 		] += _previous_text.substr(_initial_idx, visible_characters)
@@ -311,34 +335,25 @@ func _on_started_listening() -> void:
 
 
 func _on_stoped_listening() -> void:
-	if _is_waiting_input: return
+	#if _is_waiting_input: return
 	
 	_final_idx = visible_characters
 	
 	if _final_idx > -1:
 		Globals.dialog_listened_indexes[-1][1] = _final_idx
+	else:
+		_final_idx = get_parsed_text().length() - 1
 	
 	Globals.dialog_listened_indexes.append([ -1 , -1 ])
 	
-#	prints(
-#		"_initial_idx, _final_idx, _length_diff",
-#		_initial_idx, _final_idx, _length_diff
-#	)
-#	prints("Globals.dialog_listened_indexes", Globals.dialog_listened_indexes)
-#	Globals.listened_dialogs[
-#		'%s_%d' % [_talking_character, _talking_character_idx]
-#	] += get_parsed_text().substr(
-#		_initial_idx,
-#		(_final_idx - _length_diff) if _final_idx > -1 else -1
-#	)
 	Globals.listened_dialogs[
 		'%s_%d' % [_talking_character, _talking_character_idx]
 	] += get_parsed_text().substr(
 		_initial_idx,
-		_final_idx
+		(_final_idx - _initial_idx) + 1
 	)
 
-	if _final_idx > -1:
+	if _final_idx > -1 and _final_idx != get_parsed_text().length() - 1:
 		Globals.listened_dialogs[
 			'%s_%d' % [_talking_character, _talking_character_idx]
-		] += "..."
+		] += "... "

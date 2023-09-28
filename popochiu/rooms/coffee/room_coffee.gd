@@ -21,8 +21,8 @@ func _on_room_entered() -> void:
 # is visible.
 func _on_room_transition_finished() -> void:
 	E.queue([
-		"..",
-		"Fulana: ***¡Hola! ¿Cómo estás?",
+		"....",
+		"Fulana: ¡Hola! ¿Cómo estás?",
 		"Melana: Hola, estoy un poco preocupado. Tengo un problema familiar y no sé qué hacer",
 		"Fulana: Oh, lo siento por escuchar eso. ¿Quieres hablar al respecto?",
 		"Melana: Sí, supongo que necesito desahogarme. Mi hermana y yo hemos estado discutiendo mucho últimamente. Parece que no podemos ponernos de acuerdo en nada y cada conversación termina en una pelea",
